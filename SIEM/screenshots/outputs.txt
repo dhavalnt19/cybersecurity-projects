@@ -1,0 +1,100 @@
+File Integrity Monitor (FIM) output tests:
+
+TEST-1:
+echo "hello" > test.txt
+python3 fim.py
+
+echo "hacked" > test.txt
+python3 fim.py
+
+output: 🚨 ALERT: test.txt modified!
+
+
+TEST-2:
+echo "secure data" > test.txt
+python3 fim.py   # baseline
+
+python3 fim.py   # run again without change
+
+output: ✅ test.txt is safe
+
+TEST-3. File Deleted 🚨:
+echo "important" > test.txt
+python3 fim.py
+
+rm test.txt
+python3 fim.py   
+
+
+
+     [  Update:    code: if not os.path.exists(file):
+    print(f"🚨 ALERT: {file} deleted!")  ]
+
+
+output:
+🚨 ALERT: test.txt deleted!
+
+
+TEST-4. New File Added 🚨:
+[ update:   if file not in baseline:
+    print(f"🚨 ALERT: New file added: {file}")   ]
+
+
+echo "file1" > test.txt
+python3 fim.py
+
+echo "new file" > new.txt
+python3 fim.py
+
+
+
+
+TEST-5. Multiple Files Monitoring 🔥:
+ [    UPDATE :    TARGET_FILES = ["test.txt", "config.txt"]    ]
+
+echo "data1" > test.txt
+echo "config" > config.txt
+python3 fim.py
+
+echo "changed" > config.txt
+python3 fim.py
+
+
+
+output:   ✅ test.txt is safe
+🚨 ALERT: config.txt modified!
+
+
+UPDATE  code:
+
+print(f"🚨 ALERT: {file} modified!")
+print(f"Old Hash: {baseline[file]}")
+print(f"New Hash: {current_hash}")
+
+output:  
+ 🚨 ALERT: test.txt modified!
+Old Hash: 2cf24dba5fb0a...
+New Hash: 4a7d1ed414474...
+
+
+
+
+
+---------  SSH BRUTE FORCE  ----------
+
+TEST:  
+
+python3 ssh_detector.py
+if not logs appears:  
+
+cp /var/log/auth.log
+	OR
+macOS >>  log show --predicate 'eventMessage contains "Failed password"' --last 1h
+
+
+
+
+--------  MALWAR HASH SCANNER ---------
+
+echo "hello" > sample.exe
+python3 hash_scanner.py
