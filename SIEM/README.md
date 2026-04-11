@@ -15,5 +15,3 @@
 - Linux Logs
 - Hashing Algorithms
 
-## How to Run
-python3 run_all.py
